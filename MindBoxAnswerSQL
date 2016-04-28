@@ -1,0 +1,7 @@
+/*
+Пусть таблица с регистрацией клиентов называется , а таблица с покупками клиентов называется Purchaises 
+*/
+SELECT DISTINCT ct.CustomerId, ct RegistrationDateTime
+FROM Customers ct
+JOIN Purchaises pt ON ct.CustomerId=pt.CustomerId
+WHERE DATEDIFF(day,pt.PurchaiseDatetime,SYSDATETIME)<30 AND COUNT(pt.ProductName='молоко')>0 AND COUNT(pt.ProductName='сметана')=0  
