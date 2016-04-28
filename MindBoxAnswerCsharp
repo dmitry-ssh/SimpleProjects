@@ -1,0 +1,193 @@
+using System;
+
+
+namespace TriangleSquare
+{
+    //in real life I would use NUnit
+    public static class RectTrialgleTests
+    {
+        public static void TestAll()
+        {
+            IsValidInput_NotAllSides_ThrowsException();
+            IsValidInput_NotNumbers_ThrowsException();
+            IsValidInput_NegativeNumbers_ThrowsException();
+            IsValidInput_NotRectTriangle_ThrowsException();
+        }
+        public static void IsValidInput_NotAllSides_ThrowsException()
+        {
+            const string testname = "Тест ввода не всех длин";
+            try
+            {
+                var square = TriangleSquare.RectTriangleSquare(new string[] { "2", "-5"});
+                Console.WriteLine(testname + " - ПРОВАЛ!");
+
+            }
+            catch (FormatException fe)
+            {
+                if (fe.Message == "Введены не все значения!")
+                {
+                    Console.WriteLine(testname+" - ОК!");
+                }
+                else
+                {
+                    Console.WriteLine(testname + " - ПРОВАЛ!");
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine(testname + " - ПРОВАЛ!" + ex.Message);
+            }
+        }
+        public static void IsValidInput_NotNumbers_ThrowsException()
+        {
+            const string testname = "Тест ввода не числовых значений";
+            try
+            {
+                var square = TriangleSquare.RectTriangleSquare(new string[]{"2","r","4"});
+                Console.WriteLine(testname + " - ПРОВАЛ!");
+            }
+            catch(FormatException fe)
+            {
+                if (fe.Message == "Введены не числовые значения!")
+                {
+                    Console.WriteLine(testname + " - ОК!");
+                }
+                else
+                {
+                    Console.WriteLine(testname + " - ПРОВАЛ!");
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine(testname + " - ПРОВАЛ! ");
+            }
+        }
+        public static void IsValidInput_NegativeNumbers_ThrowsException()
+        {
+            const string testname = "Тест ввода отрицательных значений";
+            try
+            {
+                var square = TriangleSquare.RectTriangleSquare(new string[] { "2", "-5", "4" });
+                Console.WriteLine(testname+" - ПРОВАЛ!");
+
+            }
+            catch (FormatException fe)
+            {
+                if (fe.Message == "длины сторон должны быть положительными!")
+                {
+                    Console.WriteLine(testname + " - ОК!");
+                }
+                else
+                {
+                    Console.WriteLine(testname+" - ПРОВАЛ!");
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine(testname+ " - ПРОВАЛ!" + ex.Message);
+            }
+        }
+        public static void IsValidInput_NotRectTriangle_ThrowsException()
+        {
+            const string testname = "Тест ввода длине не прямоугольного треугольника";
+            try
+            {
+                var square = TriangleSquare.RectTriangleSquare(new string[] { "2", "3", "4" });
+                Console.WriteLine(testname + " - ПРОВАЛ!");
+
+            }
+            catch (InvalidOperationException fe)
+            {
+                if (fe.Message == "Треугольник не прямоугольный!")
+                {
+                    Console.WriteLine(testname + " - ОК!");
+                }
+                else
+                {
+                    Console.WriteLine(testname + " - ПРОВАЛ!");
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine(testname + " - ПРОВАЛ!" + ex.Message);
+            }
+        }
+    }
+    public static class TriangleSquare
+    {
+        public static double RectTriangleSquare(double[] sides)
+        {
+            if (sides.Length != 3)
+            {
+                throw new InvalidOperationException("Введены не все значения!");
+            }
+            double[] arr = sides;
+            Array.Sort(arr);
+            if (arr[0] <= 0 || arr[1] <= 0.0 || arr[2] <= 0.0)
+            {
+                throw new FormatException("длины сторон должны быть положительными!");
+            }
+            if (!(arr[2] * arr[2] == (arr[0] * arr[0] + arr[1] * arr[1])))
+            {
+                throw new InvalidOperationException("Треугольник не прямоугольный!");
+            }
+            return 0.5 * arr[1] * arr[0];
+        }
+        public static double RectTriangleSquare(double a, double b, double c)
+        {
+            return RectTriangleSquare(new double[] { a, b, c });
+        }
+        public static double RectTriangleSquare(string strA, string strB, string strC)
+        {
+            double a, b, c;
+            if(!double.TryParse(strA,out a) || !double.TryParse(strB,out b) || !double.TryParse(strC,out c))
+            {
+                throw new FormatException("Введены не числовые значения!");
+            }
+            return RectTriangleSquare(a, b, c);
+        }
+        public static double RectTriangleSquare(string[] strSides)
+        {
+            if (strSides.Length!=3)
+            {
+                throw new FormatException("Введены не все значения!");
+            }
+            return RectTriangleSquare(strSides[0], strSides[1], strSides[2]);
+        }
+    }
+    class Program
+    {
+        
+        static void Main(string[] args)
+        {
+            string input="";
+            Console.WriteLine("Введите стороны прямоугольного треугольника. (Для выхода введите 'exit', для теста 'test')");
+            while ((input = Console.ReadLine()) != "exit")
+            {
+                if(input=="test")
+                {
+                    RectTrialgleTests.TestAll();
+                    continue;
+                }
+                
+                var sides = input.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                try
+                {
+                    var square = TriangleSquare.RectTriangleSquare(sides);
+                    Console.WriteLine("Площадь равна: " + square);
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+                Console.WriteLine("Введите стороны прямоугольного треугольника. (Для выхода введите 'exit', для теста 'test')");
+            }
+        }
+    }
+}
